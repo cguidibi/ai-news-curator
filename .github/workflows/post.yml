@@ -1,0 +1,29 @@
+name: Daily AI News Poster
+
+on:
+  schedule:
+    - cron: '30 6 * * *'  # Runs every day at 6:30 UTC
+  workflow_dispatch:      # Manual run option
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run post script
+        env:
+          WP_SITE_URL: ${{ secrets.WP_SITE_URL }}
+          WP_USERNAME: ${{ secrets.WP_USERNAME }}
+          WP_PASSWORD: ${{ secrets.WP_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: python post_test.py
